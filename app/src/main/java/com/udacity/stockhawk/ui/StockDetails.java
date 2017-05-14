@@ -9,22 +9,32 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.data.PrefUtils;
 
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
+import au.com.bytecode.opencsv.CSVReader;
 import butterknife.BindView;
+import timber.log.Timber;
 
 public class StockDetails extends AppCompatActivity {
 
@@ -68,36 +78,75 @@ public class StockDetails extends AppCompatActivity {
             populateDetails(symbol);
 
             // chart
-            history = history.replaceAll(",", ""); // remove comma
-            String[] values = history.split("\\s+"); //break on white space
+
+
 
 
 
             List<Entry> entries = new ArrayList<>();
 
-            for (int i = 0; i < values.length ; i+= 2) {
-
-                // turn your data into Entry objects
-                entries.add(new Entry(Float.parseFloat(values[i]), Float.parseFloat(values[i+1])));
+            CSVReader reader = new CSVReader(new StringReader(history));
+            String [] nextLine;
+            final List<Long> xAxisValues = new ArrayList<>();
+            int xAxisPosition = 0;
+            try {
+                while ((nextLine = reader.readNext()) != null) {
+                    xAxisValues.add(Long.valueOf(nextLine[0]));
+                    Entry entry = new Entry(
+                            xAxisPosition,
+                            Float.valueOf(nextLine[1])
+                    );
+                    entries.add(entry);
+                    xAxisPosition++;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
-            LineDataSet dataSet = new LineDataSet(entries, "Label"); // add entries to dataset
-
-            dataSet.setCircleRadius(5);
-            dataSet.setLineWidth(10);
-            dataSet.setColor(Color.argb(255, 255, 0, 0));
-            dataSet.setValueTextColor(Color.argb(255, 0, 255, 0)); // styling, ...
-                   LineData lineData = new LineData(dataSet);
-           chart.setData(lineData);
-            chart.getAxisLeft().setSpaceBottom(10);
-            chart.getAxisRight().setSpaceTop(10);
-            //chart.getXAxis().setValueFormatter(new DayAxisValueFormatter(chart));
-
-
-            chart.setMaxVisibleValueCount(100);
+            LineData lineData = new LineData(new LineDataSet(entries, symbol));
+            chart.setData(lineData);
+            XAxis xAxis = chart.getXAxis();
+            xAxis.setValueFormatter(new IAxisValueFormatter() {
+                @Override
+                public String getFormattedValue(float value, AxisBase axis) {
+                    Date date = new Date(xAxisValues.get(xAxisValues.size()-(int)value-1));
+                    return new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH).format(date);
+                }
+            });
 
 
-            chart.invalidate(); // refresh
+//
+//            Timber.d("Creating data");
+//            LineDataSet dataSet = new LineDataSet(entries, "Label"); // add entries to dataset
+//
+//            dataSet.setCircleRadius(5);
+//            dataSet.setLineWidth(10);
+//            dataSet.setColor(Color.argb(255, 255, 0, 0));
+//            dataSet.setValueTextColor(Color.argb(255, 0, 255, 0)); // styling, ...
+//            LineData lineData = new LineData(dataSet);
+//            Timber.d("Setting up chart");
+//            chart.setData(lineData);
+//            chart.getAxisLeft().setSpaceBottom(10);
+//            chart.getAxisRight().setSpaceTop(10);
+//            chart.getXAxis().setValueFormatter(new IAxisValueFormatter() {
+//
+//                private SimpleDateFormat mFormat = new SimpleDateFormat("YYYY");
+//
+//                @Override
+//                public String getFormattedValue(float value, AxisBase axis) {
+//
+//                    //long millis = TimeUnit.HOURS.toMillis((long) value);
+//                    long millis = (long) (value );
+//                    return mFormat.format(new Date(millis));
+//                }});
+//
+//
+//            chart.setMaxVisibleValueCount(100);
+//
+//
+//            //chart.invalidate(); // refresh
+
+            Timber.d("I am here now");
 
         }
 
