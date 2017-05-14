@@ -68,10 +68,9 @@ public class StockDetails extends AppCompatActivity {
             populateDetails(symbol);
 
             // chart
-            history = history.replaceAll(",", "");
-            String[] values = history.split("\\s+");
+            history = history.replaceAll(",", ""); // remove comma
+            String[] values = history.split("\\s+"); //break on white space
 
-            float x = Float.parseFloat(values[0]);
 
 
             List<Entry> entries = new ArrayList<>();
@@ -83,11 +82,21 @@ public class StockDetails extends AppCompatActivity {
             }
 
             LineDataSet dataSet = new LineDataSet(entries, "Label"); // add entries to dataset
-            dataSet.setColor(Color.argb(255, 0, 0, 64));
-            dataSet.setValueTextColor(Color.argb(255, 255, 175, 64)); // styling, ...
-            LineData lineData = new LineData(dataSet);
-            chart.setData(lineData);
-            chart.getXAxis().setValueFormatter(new DayAxisValueFormatter(chart));
+
+            dataSet.setCircleRadius(5);
+            dataSet.setLineWidth(10);
+            dataSet.setColor(Color.argb(255, 255, 0, 0));
+            dataSet.setValueTextColor(Color.argb(255, 0, 255, 0)); // styling, ...
+                   LineData lineData = new LineData(dataSet);
+           chart.setData(lineData);
+            chart.getAxisLeft().setSpaceBottom(10);
+            chart.getAxisRight().setSpaceTop(10);
+            //chart.getXAxis().setValueFormatter(new DayAxisValueFormatter(chart));
+
+
+            chart.setMaxVisibleValueCount(100);
+
+
             chart.invalidate(); // refresh
 
         }
