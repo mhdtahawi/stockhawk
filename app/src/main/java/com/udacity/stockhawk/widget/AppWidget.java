@@ -13,7 +13,7 @@ import com.udacity.stockhawk.R;
  * Created by monac on 5/14/2017.
  */
 
-public class AppWidgetConfigure  extends AppWidgetProvider {
+public class AppWidget extends AppWidgetProvider {
 
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         final int N = appWidgetIds.length;
@@ -29,8 +29,7 @@ public class AppWidgetConfigure  extends AppWidgetProvider {
             // Get the layout for the App Widget and attach an on-click listener
             // to the button
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.appwidget);
-
-            //views.setOnClickPendingIntent(R.id.button, pendingIntent);
+            views.setOnClickPendingIntent(R.id.click_me, pendingIntent);
 
             // Tell the AppWidgetManager to perform an update on the current app widget
             appWidgetManager.updateAppWidget(appWidgetId, views);
