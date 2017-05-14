@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.widget.RemoteViews;
 
 import com.udacity.stockhawk.ui.MainActivity;
@@ -22,15 +23,22 @@ public class AppWidget extends AppWidgetProvider {
         for (int i=0; i<N; i++) {
             int appWidgetId = appWidgetIds[i];
 
-            // Create an Intent to launch ExampleActivity
+            // Create an Intent to launch MainActivity
             Intent intent = new Intent(context, MainActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
             // Get the layout for the App Widget and attach an on-click listener
             // to the button
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.appwidget);
-            views.setOnClickPendingIntent(R.id.click_me, pendingIntent);
+            views.setOnClickPendingIntent(R.id.widget_root, pendingIntent);
 
+
+
+            Intent widgetIntent = new Intent(context, StockWidgetIntentService.class);
+            widgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+            widgetIntent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+
+            views.setRemoteAdapter(R.id.stock_list, widgetIntent);
             // Tell the AppWidgetManager to perform an update on the current app widget
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }

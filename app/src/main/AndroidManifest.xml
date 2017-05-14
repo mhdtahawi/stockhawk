@@ -41,8 +41,7 @@
         <activity android:name=".ui.StockDetails"></activity>
 
         <receiver android:name="com.udacity.stockhawk.widget.AppWidget"
-            android:label="AAAA-widget"
-            android:enabled="true">
+            android:label="StockHawk widget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="com.udacity.stockhawk.ACTION_DATA_UPDATED" />
