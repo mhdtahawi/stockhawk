@@ -5,6 +5,10 @@
     android:padding="4dp"
     android:id="@+id/widget_root">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="HELLO I AM HERE"/>
     <ListView
         android:id="@+id/stock_list"
         android:layout_width="match_parent"

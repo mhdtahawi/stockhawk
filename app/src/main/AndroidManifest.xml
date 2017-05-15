@@ -49,6 +49,10 @@
             <meta-data android:name="android.appwidget.provider"
                 android:resource="@xml/appwidget_info" />
         </receiver>
+
+        <service
+            android:name="com.udacity.stockhawk.widget.StockWidgetIntentService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"/>
     </application>
 
 

@@ -21,26 +21,32 @@ public class AppWidget extends AppWidgetProvider {
 
         // Perform this loop procedure for each App Widget that belongs to this provider
         for (int i=0; i<N; i++) {
+
             int appWidgetId = appWidgetIds[i];
-
-            // Create an Intent to launch MainActivity
-            Intent intent = new Intent(context, MainActivity.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-
-            // Get the layout for the App Widget and attach an on-click listener
-            // to the button
-            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.appwidget);
-            views.setOnClickPendingIntent(R.id.widget_root, pendingIntent);
-
-
 
             Intent widgetIntent = new Intent(context, StockWidgetIntentService.class);
             widgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-            widgetIntent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+            widgetIntent.setData(Uri.parse(widgetIntent.toUri(Intent.URI_INTENT_SCHEME)));
 
-            views.setRemoteAdapter(R.id.stock_list, widgetIntent);
+            RemoteViews widget = new RemoteViews(context.getPackageName(), R.layout.appwidget);
+            widget.setRemoteAdapter(R.id.stock_list, widgetIntent);
+
+
+
+
+            // Create an Intent to launch MainActivity
+            Intent intent = new Intent(context, MainActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            // Get the layout for the App Widget and attach an on-click listener
+            widget.setOnClickPendingIntent(R.id.widget_root, pendingIntent);
+
+
+
+
             // Tell the AppWidgetManager to perform an update on the current app widget
-            appWidgetManager.updateAppWidget(appWidgetId, views);
+            appWidgetManager.updateAppWidget(appWidgetId, widget);
         }
+        super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
 }
