@@ -1,5 +1,6 @@
 package com.udacity.stockhawk.widget;
 
+import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -10,6 +11,8 @@ import android.widget.RemoteViewsService;
 
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
+import com.udacity.stockhawk.data.PrefUtils;
+import com.udacity.stockhawk.ui.StockDetails;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -32,7 +35,7 @@ public class StockWidgetIntentService extends RemoteViewsService {
         return new StockWidgetViewFactory(getApplicationContext());
     }
 
-    private class  StockWidgetViewFactory implements RemoteViewsFactory{
+    private class StockWidgetViewFactory implements RemoteViewsFactory {
         private final Context mApplicationContext;
         private List<ContentValues> mCvList = new ArrayList<>();
         private final DecimalFormat dollarFormat;
@@ -40,12 +43,12 @@ public class StockWidgetIntentService extends RemoteViewsService {
         private final DecimalFormat percentageFormat;
 
 
-        public StockWidgetViewFactory (Context applicationContext){
+        public StockWidgetViewFactory(Context applicationContext) {
             mApplicationContext = applicationContext;
             dollarFormat = (DecimalFormat) NumberFormat.getCurrencyInstance(Locale.US);
             dollarFormatWithPlus = (DecimalFormat) NumberFormat.getCurrencyInstance(Locale.US);
             dollarFormatWithPlus.setPositivePrefix("+$");
-            percentageFormat = (DecimalFormat)  NumberFormat.getCurrencyInstance(Locale.getDefault());
+            percentageFormat = (DecimalFormat) NumberFormat.getCurrencyInstance(Locale.getDefault());
             percentageFormat.setMaximumFractionDigits(2);
             percentageFormat.setMinimumFractionDigits(2);
             percentageFormat.setPositivePrefix("+");
@@ -92,6 +95,16 @@ public class StockWidgetIntentService extends RemoteViewsService {
 
         @Override
         public void onDataSetChanged() {
+
+            /*
+            http://stackoverflow.com/a/20645908/1182207
+            final long token = Binder.clearCallingIdentity();
+            try {
+                getData();
+            } finally {
+                Binder.restoreCallingIdentity(token);
+            }
+            */
             Thread thread = new Thread() {
                 public void run() {
                     getData();
@@ -127,14 +140,33 @@ public class StockWidgetIntentService extends RemoteViewsService {
             float absChange = cv.getAsFloat(Contract.Quote.COLUMN_ABSOLUTE_CHANGE);
             float perChange = cv.getAsFloat(Contract.Quote.COLUMN_PERCENTAGE_CHANGE);
 
-            if(absChange >0){
+            if (absChange > 0) {
                 views.setInt(R.id.change, "setBackgroundResource", R.drawable.percent_change_pill_green);
-            }else{
+            } else {
                 views.setInt(R.id.change, "setBackgroundResource", R.drawable.percent_change_pill_red);
 
             }
+            if (PrefUtils.getDisplayMode(mApplicationContext)
+                    .equals(mApplicationContext.getString(R.string.pref_display_mode_absolute_key))) {
+                views.setTextViewText(R.id.change, dollarFormatWithPlus.format(perChange / 100));
+            } else {
+                views.setTextViewText(R.id.change, percentageFormat.format(perChange / 100));
+            }
 
-            views.setTextViewText(R.id.change, percentageFormat.format(perChange/100));
+
+            Intent fillInIntent = new Intent(mApplicationContext, StockDetails.class);
+            fillInIntent.putExtra("SYMBOL", cv.getAsString(Contract.Quote.COLUMN_SYMBOL));
+            views.setOnClickFillInIntent(R.id.item_quote_root, fillInIntent);
+
+
+            //Intent lunchDetailsActivityIntent = new Intent(mApplicationContext, StockDetails.class);
+            //lunchDetailsActivityIntent.putExtra("SYMBOL", symbol);
+
+            //PendingIntent pendingIntent = PendingIntent.getActivity(mApplicationContext, 0, lunchDetailsActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            //views.setOnClickPendingIntent(R.id.item_quote_root, pendingIntent);
+
+
             return views;
         }
 

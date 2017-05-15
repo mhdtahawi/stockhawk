@@ -6,9 +6,13 @@
     android:id="@+id/widget_root">
 
     <TextView
+        android:textStyle="bold"
+        android:textAlignment="center"
+        android:textSize="20dp"
+        android:id="@+id/widget_title"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="HELLO I AM HERE"/>
+        android:text="@string/widget_title"/>
     <ListView
         android:id="@+id/stock_list"
         android:layout_width="match_parent"

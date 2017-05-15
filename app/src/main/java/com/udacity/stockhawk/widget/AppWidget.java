@@ -10,6 +10,8 @@ import android.widget.RemoteViews;
 
 import com.udacity.stockhawk.ui.MainActivity;
 import com.udacity.stockhawk.R;
+import com.udacity.stockhawk.ui.StockDetails;
+
 /**
  * Created by monac on 5/14/2017.
  */
@@ -32,6 +34,12 @@ public class AppWidget extends AppWidgetProvider {
             widget.setRemoteAdapter(R.id.stock_list, widgetIntent);
 
 
+            Intent startActivityIntent = new Intent(context, StockDetails.class);
+
+            PendingIntent startActivityPendingIntent = PendingIntent.getActivity(context, 0, startActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            widget.setPendingIntentTemplate(R.id.stock_list, startActivityPendingIntent);
+
+
 
 
             // Create an Intent to launch MainActivity
@@ -39,10 +47,7 @@ public class AppWidget extends AppWidgetProvider {
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             // Get the layout for the App Widget and attach an on-click listener
-            widget.setOnClickPendingIntent(R.id.widget_root, pendingIntent);
-
-
-
+            widget.setOnClickPendingIntent(R.id.widget_title, pendingIntent);
 
             // Tell the AppWidgetManager to perform an update on the current app widget
             appWidgetManager.updateAppWidget(appWidgetId, widget);

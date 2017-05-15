@@ -115,39 +115,6 @@ public class StockDetails extends AppCompatActivity {
             });
 
 
-//
-//            Timber.d("Creating data");
-//            LineDataSet dataSet = new LineDataSet(entries, "Label"); // add entries to dataset
-//
-//            dataSet.setCircleRadius(5);
-//            dataSet.setLineWidth(10);
-//            dataSet.setColor(Color.argb(255, 255, 0, 0));
-//            dataSet.setValueTextColor(Color.argb(255, 0, 255, 0)); // styling, ...
-//            LineData lineData = new LineData(dataSet);
-//            Timber.d("Setting up chart");
-//            chart.setData(lineData);
-//            chart.getAxisLeft().setSpaceBottom(10);
-//            chart.getAxisRight().setSpaceTop(10);
-//            chart.getXAxis().setValueFormatter(new IAxisValueFormatter() {
-//
-//                private SimpleDateFormat mFormat = new SimpleDateFormat("YYYY");
-//
-//                @Override
-//                public String getFormattedValue(float value, AxisBase axis) {
-//
-//                    //long millis = TimeUnit.HOURS.toMillis((long) value);
-//                    long millis = (long) (value );
-//                    return mFormat.format(new Date(millis));
-//                }});
-//
-//
-//            chart.setMaxVisibleValueCount(100);
-//
-//
-//            //chart.invalidate(); // refresh
-
-            Timber.d("I am here now");
-
         }
 
 

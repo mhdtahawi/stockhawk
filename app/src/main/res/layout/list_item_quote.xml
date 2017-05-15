@@ -8,7 +8,8 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:paddingStart="16dp"
-    android:paddingEnd="16dp">
+    android:paddingEnd="16dp"
+    android:id="@+id/item_quote_root">
 
     <TextView
         android:id="@+id/symbol"
