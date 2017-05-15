@@ -77,7 +77,7 @@ public final class QuoteSyncJob {
 
                 Stock stock = quotes.get(symbol);
                 // Fixing the bug found by Jamal :D
-                if (!stock.isValid()){ // check if the stock actually exists
+                if (stock == null || !stock.isValid()){ // check if the stock actually exists
                     PrefUtils.removeStock(context, symbol); // if not, remove it so we won't use it anymore
 
                     // Tell the user that this stock does not exists.
