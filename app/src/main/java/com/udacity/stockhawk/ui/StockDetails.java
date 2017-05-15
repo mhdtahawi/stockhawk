@@ -8,9 +8,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 
 import com.github.mikephil.charting.data.LineData;
@@ -55,14 +57,12 @@ public class StockDetails extends AppCompatActivity {
     String history;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stock_details);
 
         Intent intent = getIntent();
-
 
 
         symboltv = (TextView) findViewById(R.id.symbol);
@@ -80,13 +80,10 @@ public class StockDetails extends AppCompatActivity {
             // chart
 
 
-
-
-
             List<Entry> entries = new ArrayList<>();
 
             CSVReader reader = new CSVReader(new StringReader(history));
-            String [] nextLine;
+            String[] nextLine;
             final List<Long> xAxisValues = new ArrayList<>();
             int xAxisPosition = 0;
             try {
@@ -104,20 +101,36 @@ public class StockDetails extends AppCompatActivity {
             }
 
             LineData lineData = new LineData(new LineDataSet(entries, symbol));
+
             chart.setData(lineData);
             XAxis xAxis = chart.getXAxis();
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+            xAxis.setTextSize(10f);
+            xAxis.setTextColor(Color.WHITE);
+            xAxis.setDrawAxisLine(true);
+            xAxis.setDrawGridLines(false);
+
+            YAxis yAxis = chart.getAxisLeft();
+            yAxis.setTextSize(15);
+            yAxis.setTextColor(Color.WHITE);
+            yAxis.setDrawAxisLine(true);
+
+
+            chart.getAxisRight().setEnabled(false);
+
+
+
+
             xAxis.setValueFormatter(new IAxisValueFormatter() {
                 @Override
                 public String getFormattedValue(float value, AxisBase axis) {
-                    Date date = new Date(xAxisValues.get(xAxisValues.size()-(int)value-1));
+                    Date date = new Date(xAxisValues.get(xAxisValues.size() - (int) value - 1));
                     return new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH).format(date);
                 }
             });
 
 
         }
-
-
 
 
     }
